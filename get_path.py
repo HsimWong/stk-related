@@ -8,9 +8,8 @@ class Patcher:
         self.__dumpDescription(description)
         
     def __dumpDescription(self, description):
-        weights = [float(x) for x in description.split(',')]
+        weights = [float(x) for x in description]
         weights_indexed = 0
-        print(len(weights))
         for i in range(satellite_number):
             for j in range(i + 1, satellite_number):
                 if weights[weights_indexed] >= 0:
@@ -31,15 +30,16 @@ class Patcher:
                 else:
                     paths_sourced_from_i.append((None, None))
             paths.append(paths_sourced_from_i)
-        print(max_jump)
         return paths
 
 def extract_paths_from_file(line_number, file_dir, max_jump):
     src_file = open(file_dir, 'r')
-    reader = csv.reader(file_dir)
-    line = next((x for i, x in enumerate(reader) if i == N), None)
-    p = Patcher(str(line))
-
+    reader = csv.reader(src_file)
+    line = ""
+    for ln, x in enumerate(reader):
+        if ln == line_number:
+            line = [float(item) for item in x]
+    p = Patcher(line)
     src_file.close()
     return p.get_shortest_paths(max_jump)
-                
+              
